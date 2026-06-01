@@ -8,6 +8,7 @@ love.graphics.setDefaultFilter('nearest', 'nearest')
 
 push = require 'lib.push'
 Class = require 'lib.class'
+require 'Player'
 
 -- physical screen dimensions
 WINDOW_WIDTH, WINDOW_HEIGHT = love.window.getDesktopDimensions()
@@ -16,6 +17,8 @@ WINDOW_WIDTH, WINDOW_HEIGHT = WINDOW_WIDTH*.8, WINDOW_HEIGHT*.8 --make the windo
 -- virtual resolution dimensions
 VIRTUAL_WIDTH = 512
 VIRTUAL_HEIGHT = 288
+
+WALKSPEED = 57
 
 function love.load()
     
@@ -49,6 +52,7 @@ function love.load()
     MAP[5][3] = 1
     MAP[5][2] = 1
     MAP[10][3] = 2
+    player = Player {address = {10,3}, speed = WALKSPEED}
     MAP[1][3] = 3
 
     COLORS = {
@@ -87,7 +91,29 @@ function love.update(dt)
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end
+
+    local walkcounter = player.address[1] + player.speed * dt
+    if walkcounter >= player.address[1] + 1 then 
+        player.address[1] = player.address[1] + 1
+        print(dt)
+    end
+    reconcile(player.address, 2)
+
+
     love.keyboard.keysPressed = {}
+end
+
+function reconcile(address, type)
+    for row = 1, #MAP do
+        for col = 1, #MAP[1] do
+            if MAP[row][col] == type then
+                MAP[row][col] = 0
+            end
+            if row == address[1] and col == address[2] then
+                MAP[row][col] = type
+            end
+        end
+    end
 end
 
 function love.draw()
