@@ -8,7 +8,11 @@ love.graphics.setDefaultFilter('nearest', 'nearest')
 
 push = require 'lib.push'
 Class = require 'lib.class'
+
+require 'Thing'
 require 'Player'
+require 'Crate'
+require 'Zomb'
 
 -- physical screen dimensions
 WINDOW_WIDTH, WINDOW_HEIGHT = love.window.getDesktopDimensions()
@@ -40,21 +44,20 @@ function love.load()
 
     love.keyboard.keysPressed = {}
     MAP = {}
+    THINGS = {}
     for row = 0, VIRTUAL_WIDTH, 32 do
         table.insert(MAP, {})
         for tile = 0, VIRTUAL_HEIGHT, 32 do
             table.insert(MAP[#MAP],0)
         end
     end
-
-    MAP[5][5] = 1
-    MAP[5][4] = 1
-    MAP[5][3] = 1
-    MAP[5][2] = 1
-    MAP[10][3] = 2
+    table.insert(THINGS, Crate {address = {5,5}})
+    table.insert(THINGS, Crate {address = {5,4}})
+    table.insert(THINGS, Crate {address = {5,3}})
+    table.insert(THINGS, Crate {address = {5,2}})
     player = Player {address = {10,3}, speed = WALKSPEED}
-    MAP[1][3] = 3
-
+    table.insert(THINGS, player)
+    table.insert(THINGS, Zomb{address = {1,3}})
     COLORS = {
         crate = {1,.7,0,.6},
         player = {0,1,0,.6},
@@ -95,10 +98,8 @@ function love.update(dt)
     local walkcounter = player.address[1] + player.speed * dt
     if walkcounter >= player.address[1] + 1 then 
         player.address[1] = player.address[1] + 1
-        print(dt)
     end
     reconcile(player.address, 2)
-
 
     love.keyboard.keysPressed = {}
 end
@@ -124,12 +125,13 @@ function love.draw()
             love.graphics.rectangle('line', row, tile, 32, 32, 10, 5)
         end
     end
+    --[[
     for row = 0, VIRTUAL_WIDTH, 32 do
         for tile = 0, VIRTUAL_HEIGHT, 32 do
             local spot = MAP[row/32 + 1][tile/32 + 1] 
             if spot == 1 then
                 love.graphics.setColor(COLORS['crate'])
-            elseif spot == 2 then
+            elseif type(spot) == table then
                 love.graphics.setColor(COLORS['player'])
             elseif spot == 3 then
                 love.graphics.setColor(COLORS['zomb'])
@@ -141,6 +143,11 @@ function love.draw()
 
 
         end
+    end
+    ]]--
+    for k, thing in pairs(THINGS) do
+        love.graphics.setColor(COLORS[thing.label])
+        love.graphics.rectangle('fill', thing.address[1] * 32, thing.address[2] * 32, 32, 32)
     end
     
 

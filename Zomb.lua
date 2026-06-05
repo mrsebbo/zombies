@@ -1,8 +1,8 @@
-Player = Class{__includes = Thing}
+Zomb = Class{}
 
-function Player:init(def)
+function Zomb:init(def)
     Thing.init(self, def)
     self.direction = 'down' 
     self.speed = def.speed or WALKSPEED
-    self.label = 'player'
+    self.label = 'zomb'
 end
