@@ -10,7 +10,6 @@ end
 
 function Player:update(dt)
     local destination = {}
-   -- print(self.address[1])
 
     if love.keyboard.isDown('left') then
         self.direction = 'left'
@@ -27,17 +26,11 @@ function Player:update(dt)
     end
     if destination[2] and self.canwalk then  
         self.canwalk = false
-        print("addy:")
-        print(self.x)
 
-        Timer.tween(0.1, {[self] = {x = destination[1], y = destination[2]}}):finish(function()
-            print("gabba gabba hey!")
+        Timer.tween(0.25, {[self] = {x = destination[1], y = destination[2]}}):finish(function()
             self.canwalk = true
             Thing:reconcile(self)
         end)
-        print("huh?")
-        print(self.x)
-
     end
     Thing.update(self,dt)
 end

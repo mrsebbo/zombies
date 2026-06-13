@@ -11,7 +11,7 @@ function Thing:update(dt)
 end
 
 function Thing:reconcile(player)
-    print(player.label)
+    print(player.y)
     if MAP[player.x][player.y] ~= player then
         for k, row in pairs(MAP) do
             for l, cell in pairs(MAP[k]) do

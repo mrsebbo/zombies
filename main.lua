@@ -118,7 +118,7 @@ function love.draw()
     end
     for k, thing in pairs(THINGS) do
         love.graphics.setColor(COLORS[thing.label])
-        love.graphics.rectangle('fill', thing.x * 32, thing.y * 32, 32, 32)
+        love.graphics.rectangle('fill', thing.x * 32 - 32, thing.y * 32 - 32, 32, 32)
     end
     
 
