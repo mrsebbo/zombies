@@ -52,7 +52,7 @@ function love.load()
     for row = 0, VIRTUAL_WIDTH, 32 do
         table.insert(MAP, {})
         for tile = 0, VIRTUAL_HEIGHT, 32 do
-            table.insert(MAP[#MAP],0)
+            table.insert(MAP[#MAP],nil)
         end
     end
     table.insert(THINGS, Crate {address = {5,5}})

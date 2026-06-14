@@ -24,15 +24,29 @@ function Player:update(dt)
         self.direction = 'down'
         destination = self:setMove(self.direction)
     end
-    if destination[2] and self.canwalk then  
-        self.canwalk = false
+    if destination[2] and self.canwalk then
+        local go = self:obstacles(destination)
+        if go then  
+            self.canwalk = false
 
-        Timer.tween(0.25, {[self] = {x = destination[1], y = destination[2]}}):finish(function()
-            self.canwalk = true
-            Thing:reconcile(self)
-        end)
+            Timer.tween(0.25, {[self] = {x = destination[1], y = destination[2]}}):finish(function()
+                self.canwalk = true
+                Thing:reconcile(self)
+            end)
+        end
     end
     Thing.update(self,dt)
+end
+
+function Player:obstacles(place)
+    if place[1] < 1 or place[1] > VIRTUAL_WIDTH/32 then 
+        return false 
+    elseif place[2] < 1 or place[2] > VIRTUAL_HEIGHT/32 then 
+        return false
+    elseif MAP[place[1]][place[2]] ~= nil  then 
+        return false
+    end
+    return true
 end
 
 function Player:setMove(dir)
