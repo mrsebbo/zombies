@@ -10,15 +10,15 @@ function Thing:update(dt)
 
 end
 
-function Thing:reconcile(player)
-    if MAP[player.x][player.y] ~= player then
+function Thing:reconcile(thing)
+    if MAP[thing.x][thing.y] ~= thing then
         for k, row in pairs(MAP) do
             for l, cell in pairs(MAP[k]) do
-                if MAP[k][l] == player then
+                if MAP[k][l] == thing then
                     MAP[k][l] = nil
                 end
             end
         end
-        MAP[player.x][player.y] = player
+        MAP[thing.x][thing.y] = thing
     end
 end
