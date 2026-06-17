@@ -10,6 +10,31 @@ function Thing:update(dt)
 
 end
 
+function Thing:obstacles(place)
+    if place[1] < 1 or place[1] > VIRTUAL_WIDTH/32 then 
+        return false 
+    elseif place[2] < 1 or place[2] > VIRTUAL_HEIGHT/32 then 
+        return false
+    elseif MAP[place[1]][place[2]]  then 
+        if MAP[place[1]][place[2]].label == 'crate' then
+            if self.label == 'player' then
+                return self:blockage(place)
+            else return false
+            end
+        end
+    end
+    return true
+end
+
+function Thing:walk(destination)
+
+    self.canwalk = false
+    Timer.tween(self.speed, {[self] = {x = destination[1], y = destination[2]}}):finish(function()
+        self.canwalk = true
+        Thing:reconcile(self)
+    end)
+end
+
 function Thing:reconcile(thing)
     if MAP[thing.x][thing.y] ~= thing then
         for k, row in pairs(MAP) do
