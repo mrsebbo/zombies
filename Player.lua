@@ -38,24 +38,13 @@ function Player:update(dt)
     Thing.update(self,dt)
 end
 
--- function Player:obstacles(place)
---     if place[1] < 1 or place[1] > VIRTUAL_WIDTH/32 then 
---         return false 
---     elseif place[2] < 1 or place[2] > VIRTUAL_HEIGHT/32 then 
---         return false
---     elseif MAP[place[1]][place[2]]  then 
---         if MAP[place[1]][place[2]].label == 'crate' then
---             return self:blockage(place)
---             else return false
---         end
---     end
---     return true
--- end
+--When a player pushes a crate, this function whether there's something on the other side
+--before moving the crate. TODO: zombie squishing
 
 function Player:blockage(place)
     local thirdX = addressMath(self.x, place[1])
     local thirdY = addressMath(self.y, place[2])
-    if not MAP[thirdX][thirdY] then
+    if Thing.OOBFinder({thirdX, thirdY}) and not MAP[thirdX][thirdY] then
         local thiscrate = MAP[place[1]][place[2]]
         Timer.tween(WALKSPEED, {[MAP[place[1]][place[2]]] = {x = thirdX, y = thirdY}}):finish(function()
             Thing:reconcile(thiscrate)

@@ -10,11 +10,18 @@ function Thing:update(dt)
 
 end
 
-function Thing:obstacles(place)
+function Thing.OOBFinder(place)
     if place[1] < 1 or place[1] > VIRTUAL_WIDTH/32 then 
         return false 
     elseif place[2] < 1 or place[2] > VIRTUAL_HEIGHT/32 then 
         return false
+    else return true
+    end
+end
+
+
+function Thing:obstacles(place)
+    if not Thing.OOBFinder(place) then return false
     elseif MAP[place[1]][place[2]]  then 
         if MAP[place[1]][place[2]].label == 'crate' then
             if self.label == 'player' then
@@ -27,7 +34,6 @@ function Thing:obstacles(place)
 end
 
 function Thing:walk(destination)
-
     self.canwalk = false
     Timer.tween(self.speed, {[self] = {x = destination[1], y = destination[2]}}):finish(function()
         self.canwalk = true
@@ -35,6 +41,8 @@ function Thing:walk(destination)
     end)
 end
 
+--function to ensure that Thing's internal X and Y fields line up with the MAP coordinates.
+--should be called after every move.
 function Thing:reconcile(thing)
     if MAP[thing.x][thing.y] ~= thing then
         for k, row in pairs(MAP) do
