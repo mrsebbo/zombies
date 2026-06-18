@@ -62,6 +62,8 @@ function love.load()
     player = Player {address = {10,3}, speed = WALKSPEED}
     table.insert(THINGS, player)
     table.insert(THINGS, Zomb{address = {1,3}, player = player})
+        table.insert(THINGS, Zomb{address = {1,5}, player = player})
+
     for k, thing in pairs(THINGS) do
         MAP[thing.x][thing.y] = thing
     end

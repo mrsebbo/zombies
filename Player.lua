@@ -25,20 +25,16 @@ function Player:update(dt)
         destination = self:setMove(self.direction)
     end
     if destination[2] and self.canwalk then
+        local speed
         local go = Thing.obstacles(self,destination)
-        if go then  
-            self.canwalk = false
-
-            Timer.tween(self.speed, {[self] = {x = destination[1], y = destination[2]}}):finish(function()
-                self.canwalk = true
-                Thing:reconcile(self)
-            end)
+        if go then
+            Thing.walk(self,destination)
         end
     end
     Thing.update(self,dt)
 end
 
---When a player pushes a crate, this function whether there's something on the other side
+--When a player pushes a crate, this function checks whether there's something on the other side
 --before moving the crate. TODO: zombie squishing
 
 function Player:blockage(place)

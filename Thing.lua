@@ -28,14 +28,16 @@ function Thing:obstacles(place)
                 return self:blockage(place)
             else return false
             end
+        else return false
         end
     end
     return true
 end
 
-function Thing:walk(destination)
+function Thing:walk(destination, speed)
     self.canwalk = false
-    Timer.tween(self.speed, {[self] = {x = destination[1], y = destination[2]}}):finish(function()
+    MAP[destination[1]][destination[2]] = "!"
+    Timer.tween(speed or self.speed, {[self] = {x = destination[1], y = destination[2]}}):finish(function()
         self.canwalk = true
         Thing:reconcile(self)
     end)
