@@ -25,10 +25,10 @@ function Player:update(dt)
         destination = self:setMove(self.direction)
     end
     if destination[2] and self.canwalk then
-        local speed
-        local go = Thing.obstacles(self,destination)
+        local go, speed = Thing.obstacles(self,destination)
         if go then
-            Thing.walk(self,destination)
+            print(speed)
+            Thing.walk(self,destination, speed)
         end
     end
     Thing.update(self,dt)
@@ -42,7 +42,7 @@ function Player:blockage(place)
     local thirdY = addressMath(self.y, place[2])
     if Thing.OOBFinder({thirdX, thirdY}) and not MAP[thirdX][thirdY] then
         local thiscrate = MAP[place[1]][place[2]]
-        Timer.tween(WALKSPEED, {[MAP[place[1]][place[2]]] = {x = thirdX, y = thirdY}}):finish(function()
+        Timer.tween(WALKSPEED* 2, {[MAP[place[1]][place[2]]] = {x = thirdX, y = thirdY}}):finish(function()
             Thing:reconcile(thiscrate)
         end)
         return true

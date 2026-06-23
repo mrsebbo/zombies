@@ -25,7 +25,7 @@ function Thing:obstacles(place)
     elseif MAP[place[1]][place[2]]  then 
         if MAP[place[1]][place[2]].label == 'crate' then
             if self.label == 'player' then
-                return self:blockage(place)
+                return self:blockage(place), self.speed * 2
             else return false
             end
         else return false
