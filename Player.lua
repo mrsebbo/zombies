@@ -27,7 +27,6 @@ function Player:update(dt)
     if destination[2] and self.canwalk then
         local go, speed = Thing.obstacles(self,destination)
         if go then
-            print(speed)
             Thing.walk(self,destination, speed)
         end
     end
@@ -40,7 +39,37 @@ end
 function Player:blockage(place)
     local thirdX = addressMath(self.x, place[1])
     local thirdY = addressMath(self.y, place[2])
-    if Thing.OOBFinder({thirdX, thirdY}) and not MAP[thirdX][thirdY] then
+    local clear = false
+    if not MAP[thirdX][thirdY] then 
+        clear = true
+    else
+        if MAP[thirdX][thirdY].label == 'zomb' then
+            local zombie = MAP[thirdX][thirdY]
+            local fourthX = addressMath(place[1],thirdX)
+            local fourthY = addressMath(place[2], thirdY)
+            if Thing.OOBFinder({fourthX, fourthY}) and zombie.canwalk and not MAP[fourthX][fourthY] then
+                zombie.canwalk = false
+                Timer.tween(WALKSPEED* 2, {[zombie] = {x = fourthX, y = fourthY}}):finish(function()
+                    Thing:reconcile(zombie)
+                    zombie.canwalk = true
+                end)
+                clear = true
+            else
+                for k, thing in pairs(THINGS) do
+                    if thing == zombie then 
+                        print(#THINGS)
+                        print("found it??")
+                        table.remove(THINGS, k)
+                        print(#THINGS)
+
+                    end
+                end
+                clear = true
+            end
+        end
+    end
+
+    if Thing.OOBFinder({thirdX, thirdY}) and clear then
         local thiscrate = MAP[place[1]][place[2]]
         Timer.tween(WALKSPEED* 2, {[MAP[place[1]][place[2]]] = {x = thirdX, y = thirdY}}):finish(function()
             Thing:reconcile(thiscrate)

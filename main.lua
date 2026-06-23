@@ -61,8 +61,8 @@ function love.load()
     table.insert(THINGS, Crate {address = {5,2}})
     player = Player {address = {10,3}, speed = WALKSPEED}
     table.insert(THINGS, player)
-    --table.insert(THINGS, Zomb{address = {1,3}, player = player})
-    --table.insert(THINGS, Zomb{address = {1,5}, player = player})
+    table.insert(THINGS, Zomb{address = {1,3}, player = player})
+    table.insert(THINGS, Zomb{address = {1,5}, player = player})
 
     for k, thing in pairs(THINGS) do
         MAP[thing.x][thing.y] = thing
@@ -103,6 +103,9 @@ function love.update(dt)
 
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
+    end
+    if love.keyboard.wasPressed('r') then 
+        love.load()
     end
     for k, thing in pairs(THINGS) do
         thing:update(dt)

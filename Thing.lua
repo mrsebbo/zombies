@@ -3,6 +3,7 @@ Thing = Class{}
 function Thing:init(def)
     self.x = def.address[1]
     self.y = def.address[2]
+    self.canwalk = true
 end
 
 function Thing:update(dt)
