@@ -15,6 +15,13 @@ require 'Thing'
 require 'Player'
 require 'Crate'
 require 'Zomb'
+require 'StateMachine'
+
+require 'states.BaseState'
+require 'states.PlayState'
+require 'states.DeathState'
+require 'states.StartState'
+require 'states.PauseState'
 
 -- physical screen dimensions
 WINDOW_WIDTH, WINDOW_HEIGHT = love.window.getDesktopDimensions()
@@ -35,6 +42,16 @@ function love.load()
 
     -- seed the RNG
     math.randomseed(os.time())
+
+    gStateMachine = {
+        ['start'] = function() return StartState() end,
+        ['play'] = function() return PlayState() end,
+        ['death'] = function() return DeathState() end,
+        ['pause'] = function() return PauseState() end,
+
+    }
+   -- gStateMachine:change('start', {
+    --})
 
 
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {

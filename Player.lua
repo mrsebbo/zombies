@@ -57,11 +57,7 @@ function Player:blockage(place)
             else
                 for k, thing in pairs(THINGS) do
                     if thing == zombie then 
-                        print(#THINGS)
-                        print("found it??")
                         table.remove(THINGS, k)
-                        print(#THINGS)
-
                     end
                 end
                 clear = true
