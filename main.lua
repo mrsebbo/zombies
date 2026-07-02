@@ -35,6 +35,8 @@ WALKSPEED = .25 -- Seconds/tile: lower is faster
 
 TILE_SIZE = 32
 
+
+
 function love.load()
     
     -- window bar title
@@ -43,29 +45,37 @@ function love.load()
     -- seed the RNG
     math.randomseed(os.time())
 
-    gStateMachine = {
+    love.graphics.setDefaultFilter("nearest", "nearest", 1)
+        love.graphics.setLineStyle("rough")
+
+    love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
+        fullscreen = false,
+        vsync = true,
+        resizable = true,
+        display = 2,
+    })
+
+    push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, 
+        {fullscreen = false, 
+        resizable = true,
+        canvas = true
+    })
+
+    love.keyboard.keysPressed = {}
+    MAP = {}
+    THINGS = {}
+
+    gStateMachine = StateMachine {
         ['start'] = function() return StartState() end,
         ['play'] = function() return PlayState() end,
         ['death'] = function() return DeathState() end,
         ['pause'] = function() return PauseState() end,
 
     }
-   -- gStateMachine:change('start', {
-    --})
-
-
-    love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
-        fullscreen = false,
-        vsync = true,
-        resizable = true,
-        display = 2
+    gStateMachine:change('start', {
     })
 
-    push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {fullscreen = false, resizable = true })
 
-    love.keyboard.keysPressed = {}
-    MAP = {}
-    THINGS = {}
     for row = 0, VIRTUAL_WIDTH, 32 do
         table.insert(MAP, {})
         for tile = 0, VIRTUAL_HEIGHT, 32 do
@@ -116,6 +126,8 @@ function love.mouse.wasClicked()
 end
 
 function love.update(dt)
+    gStateMachine:update(dt)
+
     Timer.update(dt)
 
     if love.keyboard.wasPressed('escape') then
@@ -145,6 +157,9 @@ function love.draw()
         love.graphics.setColor(COLORS[thing.label])
         love.graphics.rectangle('fill', thing.x * 32 - 32, thing.y * 32 - 32, 32, 32)
     end
+
+    gStateMachine:render()
+
     
 
     push:finish()

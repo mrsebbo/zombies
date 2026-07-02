@@ -17,6 +17,8 @@
 
 BaseState = Class{}
 
+BaseState.label = "base"
+
 function BaseState:init() end
 function BaseState:enter() end
 function BaseState:exit() end

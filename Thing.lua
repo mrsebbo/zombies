@@ -11,6 +11,8 @@ function Thing:update(dt)
 
 end
 
+-- Determines whether a potential location is out of bounds for the game
+
 function Thing.OOBFinder(place)
     if place[1] < 1 or place[1] > VIRTUAL_WIDTH/32 then 
         return false 
@@ -20,6 +22,7 @@ function Thing.OOBFinder(place)
     end
 end
 
+-- Finds obstacles for a potential next location for a moving Thing
 
 function Thing:obstacles(place)
     if not Thing.OOBFinder(place) then return false
