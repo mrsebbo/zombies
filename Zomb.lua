@@ -5,15 +5,15 @@ function Zomb:init(def)
     self.direction = 'down' 
     self.speed = def.speed or WALKSPEED * 1.3
     self.label = 'zomb'
-    self.player = player
+    self.player = You
     self.canwalk = true
 end
 
 function Zomb:update(dt)
     local targX, targY = self.x, self.y
-    if player.x > self.x then
+    if self.player.x > self.x then
         targX = self.x + 1
-    elseif player.x < self.x then
+    elseif self.player.x < self.x then
         targX = self.x -1 
     end
     if self.canwalk then
@@ -21,9 +21,9 @@ function Zomb:update(dt)
             Thing.walk(self, {targX, targY})            
         else 
             targX = self.x
-            if player.y > self.y then
+            if self.player.y > self.y then
                 targY = self.y + 1
-            elseif player.y < self.y then
+            elseif self.player.y < self.y then
                 targY = self.y - 1
             end
         end

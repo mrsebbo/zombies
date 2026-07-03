@@ -16,6 +16,12 @@ require 'Player'
 require 'Crate'
 require 'Zomb'
 require 'StateMachine'
+WALKSPEED = .25 -- Seconds/tile: lower is faster
+You = Player {address = {10,3}, speed = WALKSPEED}
+
+
+require 'maps'
+--print(MAPS[1][1].label)
 
 require 'states.BaseState'
 require 'states.PlayState'
@@ -31,10 +37,8 @@ WINDOW_WIDTH, WINDOW_HEIGHT = WINDOW_WIDTH*.8, WINDOW_HEIGHT*.8 --make the windo
 VIRTUAL_WIDTH = 512
 VIRTUAL_HEIGHT = 288
 
-WALKSPEED = .25 -- Seconds/tile: lower is faster
 
 TILE_SIZE = 32
-
 
 
 function love.load()
@@ -82,18 +86,18 @@ function love.load()
             table.insert(MAP[#MAP],nil)
         end
     end
-    table.insert(THINGS, Crate {address = {5,5}})
-    table.insert(THINGS, Crate {address = {5,4}})
-    table.insert(THINGS, Crate {address = {5,3}})
-    table.insert(THINGS, Crate {address = {5,2}})
-    player = Player {address = {10,3}, speed = WALKSPEED}
-    table.insert(THINGS, player)
-    table.insert(THINGS, Zomb{address = {1,3}, player = player})
-    table.insert(THINGS, Zomb{address = {1,5}, player = player})
+    -- table.insert(THINGS, Crate {address = {5,5}})
+    -- table.insert(THINGS, Crate {address = {5,4}})
+    -- table.insert(THINGS, Crate {address = {5,3}})
+    -- table.insert(THINGS, Crate {address = {5,2}})
+    You = Player {address = {10,3}, speed = WALKSPEED}
+    -- table.insert(THINGS, player)
+    -- table.insert(THINGS, Zomb{address = {1,3}, player = player})
+    -- table.insert(THINGS, Zomb{address = {1,5}, player = player})
 
-    for k, thing in pairs(THINGS) do
-        MAP[thing.x][thing.y] = thing
-    end
+    -- for k, thing in pairs(THINGS) do
+    --     MAP[thing.x][thing.y] = thing
+    -- end
     COLORS = {
         crate = {1,.7,0,.6},
         player = {0,1,0,.6},
@@ -107,11 +111,16 @@ function love.resize(w, h)
     push:resize(w, h)
 end
 
+globalkey = 0 
+
 function love.keypressed(key)
-    
+    globalkey = globalkey + 1
+    print(globalkey)
     -- add to our table of keys pressed this frame
     love.keyboard.keysPressed[key] = true
 end
+
+
 
 function love.keyboard.wasPressed(key)
     if love.keyboard.keysPressed[key] then
@@ -136,9 +145,9 @@ function love.update(dt)
     if love.keyboard.wasPressed('r') then 
         love.load()
     end
-    for k, thing in pairs(THINGS) do
-        thing:update(dt)
-    end
+    -- for k, thing in pairs(THINGS) do
+    --     thing:update(dt)
+    -- end
     --player:update(dt)
 
     love.keyboard.keysPressed = {}
@@ -153,10 +162,10 @@ function love.draw()
             love.graphics.rectangle('line', row, tile, 32, 32, 10, 5)
         end
     end
-    for k, thing in pairs(THINGS) do
-        love.graphics.setColor(COLORS[thing.label])
-        love.graphics.rectangle('fill', thing.x * 32 - 32, thing.y * 32 - 32, 32, 32)
-    end
+    -- for k, thing in pairs(THINGS) do
+    --     love.graphics.setColor(COLORS[thing.label])
+    --     love.graphics.rectangle('fill', thing.x * 32 - 32, thing.y * 32 - 32, 32, 32)
+    -- end
 
     gStateMachine:render()
 
