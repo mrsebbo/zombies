@@ -17,11 +17,6 @@ function StartState:init()
     Timer.after(1, function() Timer.tween(1, {[lines[2]] = {o = 1}}) end)
 
     Timer.after(2, function() Timer.tween(1, {[lines[3]] = {o = 1}}) end)
-    --Timer.after(5, function()
-    --Timer.every(1, function() print(globalkey) end)
-
-
-
 end
 
 function StartState:update(dt)
