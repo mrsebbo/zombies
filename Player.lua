@@ -40,10 +40,10 @@ function Player:blockage(place)
     local thirdX = addressMath(self.x, place[1])
     local thirdY = addressMath(self.y, place[2])
     local clear = false
-    if not MAP[thirdX][thirdY] then 
+    if Thing.OOBFinder({thirdX, thirdY}) and not MAP[thirdX][thirdY] then 
         clear = true
     else
-        if MAP[thirdX][thirdY].label == 'zomb' then
+        if Thing.OOBFinder({thirdX, thirdY}) and MAP[thirdX][thirdY].label == 'zomb' then
             local zombie = MAP[thirdX][thirdY]
             local fourthX = addressMath(place[1],thirdX)
             local fourthY = addressMath(place[2], thirdY)
