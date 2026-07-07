@@ -33,3 +33,7 @@ function Zomb:update(dt)
     end
 end
 
+function Zomb:render()
+    Thing.render(self)
+end
+

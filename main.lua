@@ -26,7 +26,6 @@ require 'states.BaseState'
 require 'states.PlayState'
 require 'states.DeathState'
 require 'states.StartState'
-require 'states.PauseState'
 
 -- physical screen dimensions
 WINDOW_WIDTH, WINDOW_HEIGHT = love.window.getDesktopDimensions()
@@ -72,8 +71,6 @@ function love.load()
         ['start'] = function() return StartState() end,
         ['play'] = function() return PlayState() end,
         ['death'] = function() return DeathState() end,
-        ['pause'] = function() return PauseState() end,
-
     }
     gStateMachine:change('start', {
     })
@@ -127,6 +124,8 @@ function love.update(dt)
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end
+    
+    -- FIX MEEEEEEEEE
     if love.keyboard.wasPressed('r') then 
         love.load()
     end

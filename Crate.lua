@@ -10,3 +10,7 @@ end
 function Crate:update(dt)
     Thing.update(self, dt)
 end
+
+function Crate:render()
+    Thing.render(self)
+end

@@ -27,7 +27,10 @@ end
 function Thing:obstacles(place)
     if not Thing.OOBFinder(place) then return false
     elseif MAP[place[1]][place[2]]  then 
-        if MAP[place[1]][place[2]].label == 'crate' then
+        if MAP[place[1]][place[2]].label == 'player' then
+                MAP[place[1]][place[2]].dead = true
+                return true
+        elseif MAP[place[1]][place[2]].label == 'crate' then
             if self.label == 'player' then
                 return self:blockage(place), self.speed * 2
             else return false
@@ -60,4 +63,9 @@ function Thing:reconcile(thing)
         end
         MAP[thing.x][thing.y] = thing
     end
+end
+
+function Thing:render()
+    love.graphics.setColor(COLORS[self.label])
+    love.graphics.rectangle('fill', self.x * 32 - 32, self.y * 32 - 32, 32, 32)
 end

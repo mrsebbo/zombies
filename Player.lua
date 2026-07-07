@@ -6,24 +6,29 @@ function Player:init(def)
     self.speed = def.speed or WALKSPEED
     self.label = 'player'
     self.canwalk = true
+    self.dead = false
 end
 
 function Player:update(dt)
     local destination = {}
-
-    if love.keyboard.isDown('left') then
-        self.direction = 'left'
-        destination = self:setMove(self.direction)
-    elseif love.keyboard.isDown('right') then
-        self.direction = 'right'
-        destination = self:setMove(self.direction)
-    elseif love.keyboard.isDown('up') then
-        self.direction = 'up'
-        destination = self:setMove(self.direction)
-    elseif love.keyboard.isDown('down') then
-        self.direction = 'down'
-        destination = self:setMove(self.direction)
+    if self.dead  == false then    
+        if love.keyboard.isDown('left') then
+            self.direction = 'left'
+            destination = self:setMove(self.direction)
+        elseif love.keyboard.isDown('right') then
+            self.direction = 'right'
+            destination = self:setMove(self.direction)
+        elseif love.keyboard.isDown('up') then
+            self.direction = 'up'
+            destination = self:setMove(self.direction)
+        elseif love.keyboard.isDown('down') then
+            self.direction = 'down'
+            destination = self:setMove(self.direction)
+        end
+    else
+        gStateMachine:change('death')
     end
+
     if destination[2] and self.canwalk then
         local go, speed = Thing.obstacles(self,destination)
         if go then
@@ -34,7 +39,7 @@ function Player:update(dt)
 end
 
 --When a player pushes a crate, this function checks whether there's something on the other side
---before moving the crate. TODO: zombie squishing
+--before moving the crate.
 
 function Player:blockage(place)
     local thirdX = addressMath(self.x, place[1])
@@ -94,4 +99,8 @@ function Player:setMove(dir)
         toY = toY + 1
     end
     return{toX,toY}
+end
+
+function Player:render(dt)
+    Thing.render(self)
 end
