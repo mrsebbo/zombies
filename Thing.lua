@@ -41,6 +41,14 @@ function Thing:obstacles(place)
 end
 
 function Thing:walk(destination, speed)
+    if destination[1] < self.x then 
+        self.direction = 'up'
+    elseif destination[1] > self.x then
+        self.direction = 'down'
+    elseif destination[2] < self.y then
+        self.direction = 'left'
+    else self.direction = 'right'
+    end
     self.canwalk = false
     MAP[destination[1]][destination[2]] = "!"
     Timer.tween(speed or self.speed, {[self] = {x = destination[1], y = destination[2]}}):finish(function()
