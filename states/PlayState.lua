@@ -2,18 +2,33 @@ PlayState = Class{__includes = BaseState}
 
 PlayState.label = 'play'
 PlayState.paused = false
+PlayState.startingx = 10
+PlayState.startingy = 3
 
 function PlayState:enter(params)
-    PlayState.level = params.level
+    PlayState.level = params.level or 1
     THINGS = {}
-    for row = 0, VIRTUAL_WIDTH, 32 do
+    MAP = {}
+    for row = 1, ROOM_WIDTH do
         table.insert(MAP, {})
-        for tile = 0, VIRTUAL_HEIGHT, 32 do
+        for tile = 1, ROOM_HEIGHT do
             table.insert(MAP[#MAP],nil)
         end
     end
-    for k, thing in pairs(MAPS[self.level]) do
+    for k, description in pairs(MAPS[self.level]) do
+        local thing = {}
+        if description.label == 'player' then 
+            thing = description
+            thing.dead = false 
+            thing.x = 10
+            thing.y = 3
+        elseif description.label == 'Crate' then
+            thing = Crate({address = description.address})
+        elseif description.label == 'Zomb' then
+            thing = Zomb({address = description.address})
+        end
         table.insert(THINGS, thing)
+
         MAP[thing.x][thing.y] = thing
     end
 end

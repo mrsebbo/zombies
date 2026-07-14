@@ -1,14 +1,13 @@
 Thing = Class{}
 
 function Thing:init(def)
+    if not def.address then print("no address") end
     self.x = def.address[1]
     self.y = def.address[2]
     self.canwalk = true
 end
 
 function Thing:update(dt)
-
-
 end
 
 -- Determines whether a potential location is out of bounds for the game
@@ -48,6 +47,7 @@ function Thing:walk(destination, speed)
         self.canwalk = true
         Thing:reconcile(self)
     end)
+
 end
 
 --function to ensure that Thing's internal X and Y fields line up with the MAP coordinates.

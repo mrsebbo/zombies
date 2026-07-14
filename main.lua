@@ -17,8 +17,7 @@ require 'Crate'
 require 'Zomb'
 require 'StateMachine'
 WALKSPEED = .25 -- Seconds/tile: lower is faster
-You = Player {address = {10,3}, speed = WALKSPEED}
-
+You = Player {address = {12,3}, speed = WALKSPEED}
 
 require 'maps'
 
@@ -37,6 +36,9 @@ VIRTUAL_HEIGHT = 288
 
 
 TILE_SIZE = 32
+
+ROOM_WIDTH = VIRTUAL_WIDTH/TILE_SIZE
+ROOM_HEIGHT = VIRTUAL_HEIGHT/TILE_SIZE
 
 
 function love.load()
@@ -75,15 +77,7 @@ function love.load()
     gStateMachine:change('start', {
     })
 
-
-    for row = 0, VIRTUAL_WIDTH, 32 do
-        table.insert(MAP, {})
-        for tile = 0, VIRTUAL_HEIGHT, 32 do
-            table.insert(MAP[#MAP],nil)
-        end
-    end
-
-    You = Player {address = {10,3}, speed = WALKSPEED}
+    --You = Player {address = {10,3}, speed = WALKSPEED}
 
     COLORS = {
         crate = {1,.7,0,.6},
@@ -124,12 +118,6 @@ function love.update(dt)
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end
-    
-    -- FIX MEEEEEEEEE
-    if love.keyboard.wasPressed('r') then 
-        love.load()
-    end
-
     love.keyboard.keysPressed = {}
 end
 

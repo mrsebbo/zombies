@@ -2,6 +2,16 @@ DeathState = Class{__includes = BaseState}
 
 DeathState.label = 'death'
 
+function DeathState:update(dt)
+    if love.keyboard.wasPressed('r') then
+        for k = #THINGS, 1, -1 do
+            table.remove(THINGS, k)
+        end
+        gStateMachine:change('play', {level = 1})
+    end
+end
+
+
 function DeathState:render()
     for k, thing in pairs(THINGS) do
         thing:render()
