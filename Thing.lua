@@ -4,7 +4,10 @@ function Thing:init(def)
     if not def.address then print("no address") end
     self.x = def.address[1]
     self.y = def.address[2]
+    self.destx = self.x
+    self.desty = self.y
     self.canwalk = true
+    self.blocked = false
 end
 
 function Thing:update(dt)
@@ -15,16 +18,29 @@ end
 function Thing.OOBFinder(place)
     if place[1] < 1 or place[1] > VIRTUAL_WIDTH/32 then 
         return false 
-    elseif place[2] < 1 or place[2] > VIRTUAL_HEIGHT/32 then 
+    elseif place[2] < 1 or place[2] > VIRTUAL_HEIGHT/32 then
         return false
     else return true
     end
 end
 
--- Finds obstacles for a potential next location for a moving Thing
+function Thing:walkIfYouCan(place)
+    if place[1] % 1 ~= 0 or place[2] % 1 ~= 0 then
+        place[1] = self.destx
+        place[2] = self.desty
+    end
+    if Thing:obstacles(place) then
+        Thing.walk(self, place)
+        return true
+    else return false
+    end
+end
 
+-- Finds obstacles for a potential next location for a moving Thing
 function Thing:obstacles(place)
-    if not Thing.OOBFinder(place) then return false
+    if not Thing.OOBFinder(place) then
+        self.blocked = true
+        return false
     elseif MAP[place[1]][place[2]]  then 
         if MAP[place[1]][place[2]].label == 'player' then
                 MAP[place[1]][place[2]].dead = true
@@ -32,11 +48,16 @@ function Thing:obstacles(place)
         elseif MAP[place[1]][place[2]].label == 'crate' then
             if self.label == 'player' then
                 return self:blockage(place), self.speed * 2
-            else return false
+            else
+                self.blocked = true 
+                return false
             end
-        else return false
+        else
+            self.blocked = true 
+            return false
         end
     end
+    self.blocked = false
     return true
 end
 
@@ -49,18 +70,27 @@ function Thing:walk(destination, speed)
         self.direction = 'left'
     else self.direction = 'right'
     end
+    self.dextx = destination[1]
+    self.dexty = destination[2]
     self.canwalk = false
     MAP[destination[1]][destination[2]] = "!"
     Timer.tween(speed or self.speed, {[self] = {x = destination[1], y = destination[2]}}):finish(function()
         self.canwalk = true
         Thing:reconcile(self)
+        self.oldx = self.x
+        self.oldy = self.y
     end)
-
 end
 
 --function to ensure that Thing's internal X and Y fields line up with the MAP coordinates.
 --should be called after every move.
 function Thing:reconcile(thing)
+    local localx = thing.x
+    local localy = thing.y
+    if thing.x % 1 ~= 0 or thing.y % 1 ~= 0 then
+        localx = thing.destx
+        localy = thing.desty
+    end
     if MAP[thing.x][thing.y] ~= thing then
         for k, row in pairs(MAP) do
             for l, cell in pairs(MAP[k]) do
@@ -69,7 +99,7 @@ function Thing:reconcile(thing)
                 end
             end
         end
-        MAP[thing.x][thing.y] = thing
+        MAP[localx][localy] = thing
     end
 end
 

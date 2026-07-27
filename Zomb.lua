@@ -27,18 +27,30 @@ function Zomb:update(dt)
             targY = self.y - 1
             options = options + 1
         end
-        if options == 1 and Thing.obstacles(self, {targX, targY}) then
-            Thing.walk(self, {targX, targY})
+        if options == 1 then
+            -- WALKING AROUND OBSTACLES WIP
+            if not Thing.walkIfYouCan(self, {targX, targY}) then
+                local dir = math.random(2)
+                if targX == self.x then
+                    if dir == 1 then 
+                        Thing.walkIfYouCan(self,{self.x + 1, self.y})
+                    else
+                        Thing.walkIfYouCan(self, {self.x - 1, self.y})
+                    end
+                else
+                    if dir == 1 then 
+                        Thing.walkIfYouCan(self,{self.x, self.y -1})
+                    else
+                        Thing.walkIfYouCan(self, {self.x, self.y + 1})
+                    end
+                end
+            end
         elseif options == 2 then
             local dir = math.random(2)
             if dir == 1 then 
-                if Thing.obstacles(self, {targX, self.y}) then
-                    Thing.walk(self, {targX, self.y})
-                end
-            else 
-                if Thing.obstacles(self, {self.x, targY}) then
-                    Thing.walk(self, {self.x, targY})
-                end
+                Thing.walkIfYouCan(self,{targX, self.y})
+            else
+                Thing.walkIfYouCan(self, {self.x, targY})
             end
         end
     end

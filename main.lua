@@ -40,6 +40,12 @@ TILE_SIZE = 32
 ROOM_WIDTH = VIRTUAL_WIDTH/TILE_SIZE
 ROOM_HEIGHT = VIRTUAL_HEIGHT/TILE_SIZE
 
+DIRS = {up      = {0, -1},
+        down    = {0, 1},
+        left    = {-1, 0},
+        right   = {1, 0}
+}
+
 
 function love.load()
     

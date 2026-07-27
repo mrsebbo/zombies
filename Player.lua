@@ -52,13 +52,21 @@ function Player:blockage(place)
             local zombie = MAP[thirdX][thirdY]
             local fourthX = addressMath(place[1],thirdX)
             local fourthY = addressMath(place[2], thirdY)
-            if Thing.OOBFinder({fourthX, fourthY}) and zombie.canwalk and not MAP[fourthX][fourthY] then
-                zombie.canwalk = false
-                Timer.tween(WALKSPEED* 2, {[zombie] = {x = fourthX, y = fourthY}}):finish(function()
-                    Thing:reconcile(zombie)
-                    zombie.canwalk = true
-                end)
-                clear = true
+            if Thing.OOBFinder({fourthX, fourthY}) 
+            --BUG: WHEN A CRATE CATCHES A ZOMB IN MID-FIDGET, IT SQUASHES THE ZOMB
+            --IF POSSIBLE, WE SHOULD STACK TWEENS INSTEAD, SLIDING THE ZOMBIE IN TWO DIRECTIONS
+            --AT ONCE
+                --and zombie.canwalk 
+                and not MAP[fourthX][fourthY] then
+                    zombie.canwalk = false
+                    zombie.destx = fourthX
+                    zombie.desty = fourthY
+                    MAP[fourthX][fourthY] = "!"
+                    Timer.tween(WALKSPEED* 2, {[zombie] = {x = fourthX, y = fourthY}}):finish(function()
+                        Thing:reconcile(zombie)
+                        zombie.canwalk = true
+                    end)
+                    clear = true
             else
                 for k, thing in pairs(THINGS) do
                     if thing == zombie then 
@@ -72,6 +80,7 @@ function Player:blockage(place)
 
     if Thing.OOBFinder({thirdX, thirdY}) and clear then
         local thiscrate = MAP[place[1]][place[2]]
+        MAP[thirdX][thirdY] = "!"
         Timer.tween(WALKSPEED* 2, {[MAP[place[1]][place[2]]] = {x = thirdX, y = thirdY}}):finish(function()
             Thing:reconcile(thiscrate)
         end)
