@@ -7,15 +7,17 @@ function DeathState:update(dt)
         for k = #THINGS, 1, -1 do
             table.remove(THINGS, k)
         end
-        gStateMachine:change('play', {level = 1})
+        gStateStack:pop()
+        gStateStack:pop()
+        gStateStack:push(PlayState, {level = 1})
     end
 end
 
 
 function DeathState:render()
-    for k, thing in pairs(THINGS) do
-        thing:render()
-    end
+    -- for k, thing in pairs(THINGS) do
+    --     thing:render()
+    -- end
     love.graphics.setColor(0,0,0,.6)
     love.graphics.rectangle('fill',0,0,VIRTUAL_WIDTH,VIRTUAL_HEIGHT)
     love.graphics.setColor(1,1,1,1)

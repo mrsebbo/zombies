@@ -16,11 +16,13 @@ require 'Player'
 require 'Crate'
 require 'Zomb'
 require 'StateMachine'
+
 WALKSPEED = .25 -- Seconds/tile: lower is faster
 You = Player {address = {12,3}, speed = WALKSPEED}
 
 require 'maps'
 
+require 'states.StateStack'
 require 'states.BaseState'
 require 'states.PlayState'
 require 'states.DeathState'
@@ -75,15 +77,13 @@ function love.load()
     MAP = {}
     THINGS = {}
 
-    gStateMachine = StateMachine {
-        ['start'] = function() return StartState() end,
-        ['play'] = function() return PlayState() end,
-        ['death'] = function() return DeathState() end,
-    }
-    gStateMachine:change('start', {
-    })
-
-    --You = Player {address = {10,3}, speed = WALKSPEED}
+    -- gStateMachine = StateMachine {
+    --     ['start'] = function() return StartState() end,
+    --     ['play'] = function() return PlayState() end,
+    --     ['death'] = function() return DeathState() end,
+    -- }
+    gStateStack = StateStack()
+    gStateStack:push(StartState())
 
     COLORS = {
         crate = {1,.7,0,.6},
@@ -117,8 +117,7 @@ function love.mouse.wasClicked()
 end
 
 function love.update(dt)
-    gStateMachine:update(dt)
-
+    gStateStack:update(dt)
     Timer.update(dt)
 
     if love.keyboard.wasPressed('escape') then
@@ -137,7 +136,7 @@ function love.draw()
         end
     end
 
-    gStateMachine:render()
+    gStateStack:render()
 
     push:finish()
 end

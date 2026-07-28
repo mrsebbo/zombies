@@ -26,7 +26,8 @@ function Player:update(dt)
             destination = self:setMove(self.direction)
         end
     else
-        gStateMachine:change('death')
+        --gStateMachine:change('death')
+        gStateStack:push(DeathState())
     end
 
     if destination[2] and self.canwalk then
@@ -52,12 +53,7 @@ function Player:blockage(place)
             local zombie = MAP[thirdX][thirdY]
             local fourthX = addressMath(place[1],thirdX)
             local fourthY = addressMath(place[2], thirdY)
-            if Thing.OOBFinder({fourthX, fourthY}) 
-            --BUG: WHEN A CRATE CATCHES A ZOMB IN MID-FIDGET, IT SQUASHES THE ZOMB
-            --IF POSSIBLE, WE SHOULD STACK TWEENS INSTEAD, SLIDING THE ZOMBIE IN TWO DIRECTIONS
-            --AT ONCE
-                --and zombie.canwalk 
-                and not MAP[fourthX][fourthY] then
+            if Thing.OOBFinder({fourthX, fourthY}) and not MAP[fourthX][fourthY] then
                     zombie.canwalk = false
                     zombie.destx = fourthX
                     zombie.desty = fourthY

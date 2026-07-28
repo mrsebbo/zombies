@@ -11,6 +11,9 @@ end
 
 function Zomb:update(dt)
     local targX, targY = self.x, self.y
+
+    -- All of this zomb AI may need to be broken out into something more 
+    --modular at some point
     local options = 0
     if self.canwalk then
         if self.player.x > self.x then
@@ -28,7 +31,7 @@ function Zomb:update(dt)
             options = options + 1
         end
         if options == 1 then
-            -- WALKING AROUND OBSTACLES WIP
+            -- WALKING AROUND OBSTACLES
             if not Thing.walkIfYouCan(self, {targX, targY}) then
                 local dir = math.random(2)
                 if targX == self.x then

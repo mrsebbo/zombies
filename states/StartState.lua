@@ -21,7 +21,8 @@ end
 
 function StartState:update(dt)
     if globalkey > 0 then
-        gStateMachine:change('play', {level = 1})
+        gStateStack:pop()
+        gStateStack:push(PlayState, {level=1})
     end
 end
 

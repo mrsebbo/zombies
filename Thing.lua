@@ -14,7 +14,6 @@ function Thing:update(dt)
 end
 
 -- Determines whether a potential location is out of bounds for the game
-
 function Thing.OOBFinder(place)
     if place[1] < 1 or place[1] > VIRTUAL_WIDTH/32 then 
         return false 
@@ -24,6 +23,8 @@ function Thing.OOBFinder(place)
     end
 end
 
+--checks for obstacles and OOB, then triggers a walk if neither is found.
+--modulus check is in case the entity is caught mid-tween.
 function Thing:walkIfYouCan(place)
     if place[1] % 1 ~= 0 or place[2] % 1 ~= 0 then
         place[1] = self.destx
@@ -41,10 +42,13 @@ function Thing:obstacles(place)
     if not Thing.OOBFinder(place) then
         self.blocked = true
         return false
+-- The only thing that should run into the player is a zombie. If that 
+-- happens, the player dies.
     elseif MAP[place[1]][place[2]]  then 
         if MAP[place[1]][place[2]].label == 'player' then
                 MAP[place[1]][place[2]].dead = true
                 return true
+-- Special crate-pushing rules
         elseif MAP[place[1]][place[2]].label == 'crate' then
             if self.label == 'player' then
                 return self:blockage(place), self.speed * 2
@@ -61,6 +65,7 @@ function Thing:obstacles(place)
     return true
 end
 
+--generic locomotion function:
 function Thing:walk(destination, speed)
     if destination[1] < self.x then 
         self.direction = 'up'
@@ -77,8 +82,6 @@ function Thing:walk(destination, speed)
     Timer.tween(speed or self.speed, {[self] = {x = destination[1], y = destination[2]}}):finish(function()
         self.canwalk = true
         Thing:reconcile(self)
-        self.oldx = self.x
-        self.oldy = self.y
     end)
 end
 
